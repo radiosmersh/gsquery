@@ -8,7 +8,7 @@ INFO_RULES		= 8
 INFO_TEAM		= 16
 INFO_ALL		= INFO_CHALLENGE | INFO_STATUS | INFO_PLAYER | INFO_RULES | INFO_TEAM
 
-class none(object):
+class Server(object):
 	SUPPORTS = INFO_NONE
 
 	def __init__(self, host, port):
@@ -61,7 +61,7 @@ class none(object):
 			if packet[0:size] == header:
 				return index
 
-class hl(none):
+class hl(Server):
 
 	"""
 	Half-Life
@@ -184,7 +184,7 @@ class hl(none):
 			information[name] = value 
 		return information
 
-class hl2(none):
+class hl2(Server):
 
 	"""
 	Half-Life 2
@@ -286,7 +286,7 @@ class hl2(none):
 			information[name] = value
 		return information
 
-class gs(none):
+class gs(Server):
 
 	"""
 	GameSpy
@@ -345,7 +345,7 @@ class gs(none):
 					if INFO_STATUS in self.data: self.data[INFO_STATUS][key] = value
 					if INFO_RULES in self.data: self.data[INFO_RULES][key] = value
 
-class gs2(none):
+class gs2(Server):
 
 	"""
 	GameSpy 2
@@ -407,7 +407,7 @@ class gs2(none):
 				if player: information.append(player)
 		return information
 
-class gs3(none):
+class gs3(Server):
 
 	"""
 	GameSpy 3
@@ -490,7 +490,7 @@ class gs3(none):
 							row += 1
 					self.unrequire(INFO_TEAM)
 
-class q3(none):
+class q3(Server):
 
 	"""
 	Quake 3
@@ -557,7 +557,7 @@ class q3(none):
 		return information
 
 
-class q4(none):
+class q4(Server):
 
 	"""
 	Quake 4
@@ -609,7 +609,7 @@ class q4(none):
 		return information
 
 
-class qw(none):
+class qw(Server):
 
 	"""
 	QuakeWorld
@@ -669,7 +669,7 @@ class qw(none):
 		return information
 
 
-class ase(none):
+class ase(Server):
 
 	"""
 	All Seeing Eye
