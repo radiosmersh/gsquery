@@ -1,4 +1,3 @@
-from __init__ import *
 import random, select
 
 class Batch:

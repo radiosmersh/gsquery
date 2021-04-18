@@ -1,5 +1,3 @@
-from __init__ import *
-
 class none(object):
 
 	def __init__(self, hostname, port):
