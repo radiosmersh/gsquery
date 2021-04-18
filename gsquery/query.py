@@ -46,7 +46,7 @@ class Batch:
 						else:
 							print("Crap Packet", packet[1], packet[0])
 							pass
-					except socket.error, z:
+					except socket.error as z:
 						break
 			for server in servers.values():
 				if not readers:
