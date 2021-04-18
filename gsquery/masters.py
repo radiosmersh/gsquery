@@ -1,4 +1,4 @@
-from datareader import DataReader
+from .datareader import DataReader
 
 class none(object):
 
