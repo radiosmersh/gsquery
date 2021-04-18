@@ -39,19 +39,19 @@ class Batch:
 				while True:
 					try:
 						packet = reader.recvfrom(4096)
-						if servers.has_key(packet[1]):
+						if packet[1] in servers:
 							server = servers[packet[1]]
 							server.parsepackets(packet[0])
 							while server.outbound:
 								random.choice(self.sockets).sendto(server.outbound.pop(0), server.host)
 						else:
-							print("Crap Packet", packet[1], packet[0])
+							print(("Crap Packet", packet[1], packet[0]))
 							pass
 					except socket.error as z:
 						break
-			for server in servers.values():
+			for server in list(servers.values()):
 				if not readers:
-					print("Dead", server.host, server.required, server.packets, server.packetids)
+					print(("Dead", server.host, server.required, server.packets, server.packetids))
 					del servers[server.host]
 				elif server.complete():
 					callback(servers.pop(server.host))

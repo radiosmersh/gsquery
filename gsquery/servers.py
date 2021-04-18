@@ -37,7 +37,7 @@ class none(object):
 			self.packets.append(packet)
 
 	def __getitem__(self, key):
-		if not self.data.has_key(key): self.query(key)
+		if key not in self.data: self.query(key)
 		return self.data.get(key, None)
 
 	def query(self, infotype, timeout = 2):
@@ -86,15 +86,15 @@ class hl(none):
 	def request(self, infotype, *args, **kwargs):
 		super(hl, self).request(infotype, *args, **kwargs)
 		if self.requires(INFO_STATUS):
-			if self.data.has_key(INFO_CHALLENGE): self.outbound.append(self.A2S_INFO)
+			if INFO_CHALLENGE in self.data: self.outbound.append(self.A2S_INFO)
 			else: self.outbound.append(self.OLD_INFO)
 		if self.requires(INFO_PLAYER):
-			if self.data.has_key(INFO_CHALLENGE): self.outbound.append(self.A2S_PLAYER + self.data[INFO_CHALLENGE])
+			if INFO_CHALLENGE in self.data: self.outbound.append(self.A2S_PLAYER + self.data[INFO_CHALLENGE])
 			else: self.outbound.append(self.OLD_PLAYER)
 		if self.requires(INFO_RULES):
-			if self.data.has_key(INFO_CHALLENGE): self.outbound.append(self.A2S_RULES + self.data[INFO_CHALLENGE])
+			if INFO_CHALLENGE in self.data: self.outbound.append(self.A2S_RULES + self.data[INFO_CHALLENGE])
 			else: self.outbound.append(self.OLD_RULES)
-		if self.requires() and not self.data.has_key(INFO_CHALLENGE):
+		if self.requires() and INFO_CHALLENGE not in self.data:
 			self.outbound.append(self.A2S_SERVERQUERY_GETCHALLENGE)
 
 	def parsepackets(self, packet, *args, **kwargs):
@@ -103,7 +103,7 @@ class hl(none):
 			self.packets.remove(packet)
 			if packet[0:4] == "\xFE\xFF\xFF\xFF":
 				packetid = packet[4:8]
-				if not self.packetids.has_key(packetid):
+				if packetid not in self.packetids:
 					self.packetids[packetid] = [1, ord(packet[8]) & 0x0F]
 				if ord(packet[8]) - 0x10 >= 0:
 					previouspacket = self._findpacket(packet[0:8] + chr(ord(packet[8]) - 0x10))
@@ -179,7 +179,7 @@ class hl(none):
 		information = {}
 		rules = DataReader(data)
 		rulecount = rules.read("h")[0]
-		for x in xrange(rulecount):
+		for x in range(rulecount):
 			(name, value) = rules.readto(0x00, 2)
 			information[name] = value 
 		return information
@@ -206,11 +206,11 @@ class hl2(none):
 		super(hl2, self).request(infotype, *args, **kwargs)
 		if self.requires(INFO_STATUS):
 			self.outbound.append(self.A2S_INFO)
-		if self.requires(INFO_PLAYER) and self.data.has_key(INFO_CHALLENGE):
+		if self.requires(INFO_PLAYER) and INFO_CHALLENGE in self.data:
 			self.outbound.append(self.A2S_PLAYER + self.data[INFO_CHALLENGE])
-		if self.requires(INFO_RULES) and self.data.has_key(INFO_CHALLENGE):
+		if self.requires(INFO_RULES) and INFO_CHALLENGE in self.data:
 			self.outbound.append(self.A2S_RULES + self.data[INFO_CHALLENGE])
-		if self.requires(INFO_CHALLENGE) or (self.requires(INFO_PLAYER | INFO_RULES) and not self.data.has_key(INFO_CHALLENGE)):
+		if self.requires(INFO_CHALLENGE) or (self.requires(INFO_PLAYER | INFO_RULES) and INFO_CHALLENGE not in self.data):
 			self.outbound.append(self.A2S_SERVERQUERY_GETCHALLENGE)
 
 	def parsepackets(self, packet, *args, **kwargs):
@@ -219,7 +219,7 @@ class hl2(none):
 			self.packets.remove(packet)
 			if packet[0:4] == "\xFE\xFF\xFF\xFF":
 				packetid = packet[4:8]
-				if self.packetids.has_key(packetid):
+				if packetid in self.packetids:
 					self.packetids[packetid][1] += 1
 					packet = "\xFF\xFF\xFF\xFF" + self.packetids[packetid][0] + packet[9:]
 					if self.packetids[packetid][1] == self.packetids[packetid][2]:
@@ -281,7 +281,7 @@ class hl2(none):
 		information = {}
 		rules = DataReader(data)
 		rulecount = rules.read("h")[0]
-		for x in xrange(rulecount):
+		for x in range(rulecount):
 			(name, value) = rules.readto(0x00, 2)
 			information[name] = value
 		return information
@@ -318,7 +318,7 @@ class gs(none):
 			pairs = packet.split("\\")[1:]
 			if len(pairs) == 2: break
 			queryid = pairs[pairs[::2].index("queryid") * 2 + 1].split(".")
-			if not self.packetids.has_key(queryid[0]):
+			if queryid[0] not in self.packetids:
 				self.packetids[queryid[0]] = [0, None]
 			if pairs[::2].count("final"):
 				self.packetids[queryid[0]][1] = int(queryid[1])
@@ -342,8 +342,8 @@ class gs(none):
 						self.data[INFO_PLAYER][int(keyparts[1])][keyparts[0]] = pairs.pop(0)
 				else:
 					value = pairs.pop(0)
-					if self.data.has_key(INFO_STATUS): self.data[INFO_STATUS][key] = value
-					if self.data.has_key(INFO_RULES): self.data[INFO_RULES][key] = value
+					if INFO_STATUS in self.data: self.data[INFO_STATUS][key] = value
+					if INFO_RULES in self.data: self.data[INFO_RULES][key] = value
 
 class gs2(none):
 
@@ -421,7 +421,7 @@ class gs3(none):
 
 	def request(self, infotype, *args, **kwargs):
 		super(gs3, self).request(infotype, *args, **kwargs)
-		if self.data.has_key(INFO_CHALLENGE):
+		if INFO_CHALLENGE in self.data:
 			self.data[INFO_STATUS] = {}
 			self.data[INFO_PLAYER] = []
 			self.data[INFO_TEAM] = []
@@ -444,10 +444,10 @@ class gs3(none):
 				self.outbound = []
 				self.request(self.requires())
 			elif packet[0:14] == "\x00\x00\x00\x00\x00splitnum\x00":
-				if not self.data.has_key(INFO_CHALLENGE):
+				if INFO_CHALLENGE not in self.data:
 					self.data[INFO_CHALLENGE] = ""
 					self.unrequire(INFO_CHALLENGE)
-				if not self.packetids.has_key(""):
+				if "" not in self.packetids:
 					self.packetids[""] = [0, None]
 				if ord(packet[14]) >= 0x7F:
 					self.packetids[""][1] = ord(packet[14]) - 0x7F
@@ -518,7 +518,7 @@ class q3(none):
 					self.data[INFO_STATUS] = self.__parseinfo(packetsegments[1])
 					self.unrequire(INFO_STATUS)
 				if packetsegments[0][4:] == "statusResponse":
-					if self.data.has_key(INFO_STATUS):
+					if INFO_STATUS in self.data:
 						self.data[INFO_STATUS].update(self.__parseinfo(packetsegments[1]))
 					self.data[INFO_PLAYER] = self.__parseplayer("\n".join(packetsegments[2:-1]))
 					self.unrequire(INFO_PLAYER)
@@ -737,7 +737,7 @@ class ase(none):
 
 	def __readstring(self, data, count):
 		value = tuple()
-		for x in xrange(count):
+		for x in range(count):
 			length = ord(data.data[0])
 			value += (data.data[1:length],)
 			data.data = data.data[length:]

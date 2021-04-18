@@ -91,12 +91,12 @@ class q3(none):
 		elif self.mode == OUTPUT_HTML:
 			if not currentcode == None:
 				output += "</span>"
-			if self.COLORS_HTML.has_key(newcode):
+			if newcode in self.COLORS_HTML:
 				output += "<span style=\"color:#%s;\">" % (self.COLORS_HTML[newcode],)
 		elif self.mode == OUTPUT_ANSI:
 			if currentcode == None or newcode == None:
 				output += "\033[0;0m"
-			if self.COLORS_ANSI.has_key(newcode):
+			if newcode in self.COLORS_ANSI:
 				output += "\033[%s" % (self.COLORS_ANSI[newcode],)
 		return output
 

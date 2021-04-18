@@ -39,7 +39,7 @@ class hl2(none):
 		responseid = self.__decodeint(fullresponse[0:4])
 		responsecommand = self.__decodeint(fullresponse[4:8])
 
-		print(responseid, responsecommand, repr(fullresponse))
+		print((responseid, responsecommand, repr(fullresponse)))
 
 		if responsecommand == self.SERVERDATA_RESPONSE_VALUE:
 			if responseid == self.requestid:

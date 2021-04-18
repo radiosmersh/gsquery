@@ -76,7 +76,7 @@ class q3(none):
 		
 		filters = self.filters.copy()
 		
-		self.send(self.REQUEST_SERVERS % (filters.pop("protocol", 0), " ".join(filters.keys())))
+		self.send(self.REQUEST_SERVERS % (filters.pop("protocol", 0), " ".join(list(filters.keys()))))
 		servers = DataReader(self.recv())
 		while servers.read("BBBB18sB") == (0xFF, 0xFF, 0xFF, 0xFF, "getserversResponse", 0x5C):
 			while servers.data and not servers.data == "EOT":
@@ -154,7 +154,7 @@ class hl2(none):
 		filters = self.filters.copy()
 		region = filters.pop("region", 0xFF)
 		startip = filters.pop("startip", "0.0.0.0:0")
-		others = "".join(["\\%s\\%s" % x for x in filters.items()])
+		others = "".join(["\\%s\\%s" % x for x in list(filters.items())])
 
 		self.send(self.REQUEST_SERVERS % (region, startip, others))
 		servers = DataReader(self.recv())

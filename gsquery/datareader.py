@@ -18,7 +18,7 @@ class DataReader:
 		values = 1
 		if not count == None:
 			values = count
-		for x in xrange(values):
+		for x in range(values):
 			index = self.data.find(chr(byte))
 			if index == -1:
 				index = len(self.data)
