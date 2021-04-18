@@ -41,7 +41,7 @@ class hl2(none):
 		responseid = self.__decodeint(fullresponse[0:4])
 		responsecommand = self.__decodeint(fullresponse[4:8])
 
-		print responseid, responsecommand, repr(fullresponse)
+		print(responseid, responsecommand, repr(fullresponse))
 
 		if responsecommand == self.SERVERDATA_RESPONSE_VALUE:
 			if responseid == self.requestid:
@@ -57,9 +57,9 @@ class hl2(none):
 	
 	def authenticate(self, password):
 		response = self.__sendrcon(self.SERVERDATA_AUTH, password)
-		print response
-		if response is True: print "Authenticated"
-		elif response is False: print "Invalid Password"
+		print(response)
+		if response is True: print("Authenticated")
+		elif response is False: print("Invalid Password")
 	
 	def command(self, command):
 		self.__sendrcon(self.SERVERDATA_EXECCOMMAND, command)

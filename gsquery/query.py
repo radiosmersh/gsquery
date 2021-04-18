@@ -44,13 +44,13 @@ class Batch:
 							while server.outbound:
 								random.choice(self.sockets).sendto(server.outbound.pop(0), server.host)
 						else:
-							print "Crap Packet", packet[1], packet[0]
+							print("Crap Packet", packet[1], packet[0])
 							pass
 					except socket.error, z:
 						break
 			for server in servers.values():
 				if not readers:
-					print "Dead", server.host, server.required, server.packets, server.packetids
+					print("Dead", server.host, server.required, server.packets, server.packetids)
 					del servers[server.host]
 				elif server.complete():
 					callback(servers.pop(server.host))
