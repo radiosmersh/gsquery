@@ -1,3 +1,5 @@
+import socket
+
 from .datareader import DataReader
 
 INFO_NONE		= 0
