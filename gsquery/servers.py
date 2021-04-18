@@ -417,8 +417,8 @@ class gs3(Server):
 
 	SUPPORTS = INFO_CHALLENGE | INFO_STATUS | INFO_PLAYER | INFO_TEAM
 
-	REQUEST_ALL	= "\xFE\xFD\x00\x00\x00\x00\x00\xFF\xFF\xFF\x01"
-	REQUEST_CHALLENGE	= "\xFE\xFD\x09\x00\x00\x00\x00"
+	REQUEST_ALL	= b"\xFE\xFD\x00\x00\x00\x00\x00\xFF\xFF\xFF\x01"
+	REQUEST_CHALLENGE	= b"\xFE\xFD\x09\x00\x00\x00\x00"
 	REQUEST_ALL_CHALLENGE	= "\xFE\xFD\x00\x00\x00\x00\x00%s\xFF\xFF\xFF\x01"
 
 	def request(self, infotype, *args, **kwargs):
@@ -427,7 +427,7 @@ class gs3(Server):
 			self.data[INFO_STATUS] = {}
 			self.data[INFO_PLAYER] = []
 			self.data[INFO_TEAM] = []
-			self.outbound.append(self.REQUEST_ALL_CHALLENGE % self.data[INFO_CHALLENGE]);
+			self.outbound.append((self.REQUEST_ALL_CHALLENGE % self.data[INFO_CHALLENGE]).encode())
 		elif self.requires(INFO_STATUS | INFO_PLAYER | INFO_TEAM):
 			self.data[INFO_STATUS] = {}
 			self.data[INFO_PLAYER] = []
@@ -439,13 +439,13 @@ class gs3(Server):
 		super(gs3, self).parsepackets(packet, *args, **kwargs)
 		for packet in self.packets:
 			self.packets.remove(packet)
-			if packet[0:5] == "\x09\x00\x00\x00\x00":
+			if packet[0:5] == b"\x09\x00\x00\x00\x00":
 				code = int(packet[5:-1])
 				self.data[INFO_CHALLENGE] = chr((code >> 24) & 255)+chr((code >> 16) & 255)+chr((code >> 8) & 255)+chr(code & 255);
 				self.unrequire(INFO_CHALLENGE)
 				self.outbound = []
 				self.request(self.requires())
-			elif packet[0:14] == "\x00\x00\x00\x00\x00splitnum\x00":
+			elif packet[0:14] == b"\x00\x00\x00\x00\x00splitnum\x00":
 				if INFO_CHALLENGE not in self.data:
 					self.data[INFO_CHALLENGE] = ""
 					self.unrequire(INFO_CHALLENGE)
