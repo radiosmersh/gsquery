@@ -1,4 +1,4 @@
-from __init__ import *
+from datareader import DataReader
 
 class none(object):
 

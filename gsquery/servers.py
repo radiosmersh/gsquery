@@ -1,4 +1,4 @@
-from __init__ import *
+from datareader import DataReader
 
 INFO_NONE		= 0
 INFO_CHALLENGE	= 1
